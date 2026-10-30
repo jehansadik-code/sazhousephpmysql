@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+  - /bin/test -f /home/alltimebuybd/public_html/assets/css/styles.css
+  - /bin/cp frontend/assets/css/styles.css /home/alltimebuybd/public_html/assets/css/styles.css
