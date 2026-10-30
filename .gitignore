@@ -1,3 +1,9 @@
+backend/config.php
+frontend/uploads/*
+!frontend/uploads/.htaccess
+backups/
+release/
 node_modules/
-supabase/.temp/
 .audit-function-download/
+.phpunit.cache/
+supabase/.temp/

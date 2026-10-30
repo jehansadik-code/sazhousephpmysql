@@ -1,5 +1,5 @@
 {
-  "devDependencies": {
-    "supabase": "^2.121.0"
+  "scripts": {
+    "test:migration": "node --test tests/php-migration-contract.test.mjs"
   }
 }
