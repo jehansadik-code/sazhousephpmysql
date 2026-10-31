@@ -3,6 +3,15 @@ deployment:
   tasks:
   - export ROOT=/home/alltimebuybd
   - /bin/mkdir -p "$ROOT/public_html/api" "$ROOT/backend" "$ROOT/database"
+
+  # Frontend: HTML, CSS, JavaScript, assets
   - /usr/bin/rsync -av --exclude='/uploads/' --exclude='/api/' --exclude='/.htaccess' --exclude='*.zip' --exclude='*.sql' --exclude='config.php' frontend/ "$ROOT/public_html/"
+
+  # PHP API
   - /usr/bin/rsync -av --exclude='config.php' frontend/api/ "$ROOT/public_html/api/"
+
+  # Private PHP backend
   - /usr/bin/rsync -av --exclude='config.php' --exclude='/tools/' backend/ "$ROOT/backend/"
+
+  # Private SQL files and migrations
+  - /usr/bin/rsync -av database/ "$ROOT/database/"
