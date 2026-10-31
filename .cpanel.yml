@@ -1,17 +1,22 @@
 ---
 deployment:
   tasks:
-  - export ROOT=/home/alltimebuybd
-  - /bin/mkdir -p "$ROOT/public_html/api" "$ROOT/backend" "$ROOT/database"
+  # Preflight: stop before copying anything if the expected tools or sources are missing.
+  - /bin/test -x /usr/bin/rsync
+  - /bin/test -d frontend/assets
+  - /bin/test -d frontend/api
+  - /bin/test -d backend
+  - /bin/test -d database
+  - /bin/mkdir -p /home/alltimebuybd/public_html/api /home/alltimebuybd/backend /home/alltimebuybd/database
 
-  # Frontend: HTML, CSS, JavaScript, assets
-  - /usr/bin/rsync -av --exclude='/uploads/' --exclude='/api/' --exclude='/.htaccess' --exclude='*.zip' --exclude='*.sql' --exclude='config.php' frontend/ "$ROOT/public_html/"
+  # Public frontend. Do not touch live uploads, API, or existing .htaccess rules.
+  - /usr/bin/rsync -av --exclude='/uploads/' --exclude='/api/' --exclude='/.htaccess' --exclude='config.php' --exclude='*.sql' --exclude='*.zip' --exclude='.git/' --exclude='*.env' frontend/ /home/alltimebuybd/public_html/
 
-  # PHP API
-  - /usr/bin/rsync -av --exclude='config.php' frontend/api/ "$ROOT/public_html/api/"
+  # Public API PHP code. Preserve existing .htaccess and configuration.
+  - /usr/bin/rsync -av --exclude='config.php' --exclude='/.htaccess' --exclude='*.sql' --exclude='*.zip' --exclude='*.env' frontend/api/ /home/alltimebuybd/public_html/api/
 
-  # Private PHP backend
-  - /usr/bin/rsync -av --exclude='config.php' --exclude='/tools/' backend/ "$ROOT/backend/"
+  # Private backend code. Keep production secrets and CLI tools untouched.
+  - /usr/bin/rsync -av --exclude='config.php' --exclude='/tools/' --exclude='*.env' --exclude='*.sql' --exclude='*.zip' backend/ /home/alltimebuybd/backend/
 
-  # Private SQL files and migrations
-  - /usr/bin/rsync -av database/ "$ROOT/database/"
+  # Private SQL source files ONLY: does not run or import SQL into MySQL.
+  - /usr/bin/rsync -av --exclude='*.env' database/ /home/alltimebuybd/database/
