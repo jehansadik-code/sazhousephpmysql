@@ -1,5 +1,8 @@
 ---
 deployment:
   tasks:
-  - /bin/test -f /home/alltimebuybd/public_html/assets/css/styles.css
-  - /bin/cp frontend/assets/css/styles.css /home/alltimebuybd/public_html/assets/css/styles.css
+  - export ROOT=/home/alltimebuybd
+  - /bin/mkdir -p "$ROOT/public_html/api" "$ROOT/backend" "$ROOT/database"
+  - /usr/bin/rsync -av --exclude='/uploads/' --exclude='/api/' --exclude='/.htaccess' --exclude='*.zip' --exclude='*.sql' --exclude='config.php' frontend/ "$ROOT/public_html/"
+  - /usr/bin/rsync -av --exclude='config.php' frontend/api/ "$ROOT/public_html/api/"
+  - /usr/bin/rsync -av --exclude='config.php' --exclude='/tools/' backend/ "$ROOT/backend/"
